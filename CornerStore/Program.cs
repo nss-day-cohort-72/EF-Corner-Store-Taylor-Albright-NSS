@@ -36,7 +36,10 @@ app.UseHttpsRedirection();
 
 app.MapGet("/api/cashiers", (CornerStoreDbContext db) => 
 {
-    var orders = db.Cashiers
+    List<CashierDTO> cashiersDTO = db.Cashiers
+    .Include(c => c.Orders)
+    .ThenInclude(o => o.OrderProducts)
+    .ThenInclude(op => op.Product)
     .Select(c => new CashierDTO
     {
         Id = c.Id,
@@ -61,7 +64,8 @@ app.MapGet("/api/cashiers", (CornerStoreDbContext db) =>
             }).ToList(),
         }).ToList()
     }).ToList();
-    return orders;
+
+    return Results.Ok(cashiersDTO);
 
 });
 
@@ -69,7 +73,6 @@ app.MapPost("/api/cashiers", (CornerStoreDbContext db, CashierDTO cashierDTO) =>
 {
     Cashier cashier = new Cashier
     {
-        Id = cashierDTO.Id,
         FirstName = cashierDTO.FirstName,
         LastName = cashierDTO.LastName,
     };
@@ -81,6 +84,7 @@ app.MapPost("/api/cashiers", (CornerStoreDbContext db, CashierDTO cashierDTO) =>
 app.MapGet("/api/products/", (CornerStoreDbContext db, string search) =>
 {
     List<ProductDTO> products = db.Products
+        .Include(p => p.Category)
         .Select(p => new ProductDTO
         {
             Id = p.Id,
@@ -90,6 +94,7 @@ app.MapGet("/api/products/", (CornerStoreDbContext db, string search) =>
             CategoryId = p.CategoryId,
             Category = new CategoryDTO
             {
+                Id = p.Category.Id,
                 CategoryName = p.Category.CategoryName
             }
         }).ToList();
@@ -98,6 +103,7 @@ app.MapGet("/api/products/", (CornerStoreDbContext db, string search) =>
     {
         products = products.Where(p => p.ProductName.Equals(search, StringComparison.OrdinalIgnoreCase) || p.Category.CategoryName.Equals(search, StringComparison.OrdinalIgnoreCase)).ToList();
     }
+
     return Results.Ok(products);
 });
 
@@ -105,7 +111,6 @@ app.MapPost("/api/products", (CornerStoreDbContext db, ProductDTO productDTO) =>
 {
     Product product = new Product
     {
-        Id = productDTO.Id,
         ProductName = productDTO.ProductName,
         Price = productDTO.Price,
         Brand = productDTO.Brand,
@@ -136,6 +141,9 @@ app.MapPut("/api/products/{id}", (CornerStoreDbContext db, int id, ProductDTO pr
 app.MapGet("api/orders/", (CornerStoreDbContext db, string orderDate) => 
 {
     List<OrderDTO> ordersDTO = db.Orders
+    .Include(o => o.Cashier)
+    .Include(o => o.OrderProducts)
+    .ThenInclude(op => op.Product)
     .Select(o => new OrderDTO 
     {
         Id = o.Id,
@@ -151,8 +159,10 @@ app.MapGet("api/orders/", (CornerStoreDbContext db, string orderDate) =>
         {
             Id = op.Id,
             ProductId = op.ProductId,
+            OrderId = op.OrderId,
             Product = new ProductDTO
             {
+                Id = op.Product.Id,
                 Price = op.Product.Price
             },
             Quantity = op.Quantity
@@ -237,6 +247,22 @@ app.MapPost("/api/orders", (CornerStoreDbContext db, OrderDTO orderDTO) =>
 });
 
 
+
+
+//Extra handlers
+app.MapDelete("/api/product/{id}", (CornerStoreDbContext db, int id) => 
+{
+    Product product = db.Products.FirstOrDefault(p => p.Id == id);
+    if (product == null)
+    {
+        return Results.NotFound("Could not find a product with that id to delete");
+    }
+
+    string productName = product.ProductName;
+    db.Products.Remove(product);
+    db.SaveChanges();
+    return Results.Ok($"{productName} has been deleted");
+});
 
 app.Run();
 

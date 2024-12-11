@@ -171,9 +171,9 @@ namespace CornerStore.Migrations
                 values: new object[,]
                 {
                     { 1, "Best Is Best", 1, 10m, "Hamburger" },
-                    { 2, "Slickers", 1, 10m, "Salad" },
-                    { 3, "Pedros", 1, 10m, "Pizza" },
-                    { 4, "Hillberry Farms", 1, 10m, "French Fries" }
+                    { 2, "Slickers", 3, 10m, "Salad" },
+                    { 3, "Pedros", 3, 10m, "Pizza" },
+                    { 4, "Hillberry Farms", 3, 10m, "French Fries" }
                 });
 
             migrationBuilder.InsertData(
@@ -181,11 +181,11 @@ namespace CornerStore.Migrations
                 columns: new[] { "OrderId", "ProductId", "Id", "Quantity" },
                 values: new object[,]
                 {
-                    { 1, 1, 0, 2 },
-                    { 1, 2, 0, 5 },
-                    { 2, 3, 0, 10 },
-                    { 3, 2, 0, 20 },
-                    { 4, 4, 0, 3 }
+                    { 1, 1, 1, 2 },
+                    { 1, 2, 2, 5 },
+                    { 2, 3, 3, 10 },
+                    { 3, 2, 4, 20 },
+                    { 4, 4, 5, 3 }
                 });
 
             migrationBuilder.CreateIndex(

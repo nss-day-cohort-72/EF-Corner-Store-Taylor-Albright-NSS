@@ -11,7 +11,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CornerStore.Migrations
 {
     [DbContext(typeof(CornerStoreDbContext))]
-    [Migration("20241210195537_InitialCreate")]
+    [Migration("20241211155603_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -177,35 +177,35 @@ namespace CornerStore.Migrations
                         {
                             OrderId = 1,
                             ProductId = 1,
-                            Id = 0,
+                            Id = 1,
                             Quantity = 2
                         },
                         new
                         {
                             OrderId = 1,
                             ProductId = 2,
-                            Id = 0,
+                            Id = 2,
                             Quantity = 5
                         },
                         new
                         {
                             OrderId = 2,
                             ProductId = 3,
-                            Id = 0,
+                            Id = 3,
                             Quantity = 10
                         },
                         new
                         {
                             OrderId = 3,
                             ProductId = 2,
-                            Id = 0,
+                            Id = 4,
                             Quantity = 20
                         },
                         new
                         {
                             OrderId = 4,
                             ProductId = 4,
-                            Id = 0,
+                            Id = 5,
                             Quantity = 3
                         });
                 });
@@ -251,7 +251,7 @@ namespace CornerStore.Migrations
                         {
                             Id = 2,
                             Brand = "Slickers",
-                            CategoryId = 1,
+                            CategoryId = 3,
                             Price = 10m,
                             ProductName = "Salad"
                         },
@@ -259,7 +259,7 @@ namespace CornerStore.Migrations
                         {
                             Id = 3,
                             Brand = "Pedros",
-                            CategoryId = 1,
+                            CategoryId = 3,
                             Price = 10m,
                             ProductName = "Pizza"
                         },
@@ -267,7 +267,7 @@ namespace CornerStore.Migrations
                         {
                             Id = 4,
                             Brand = "Hillberry Farms",
-                            CategoryId = 1,
+                            CategoryId = 3,
                             Price = 10m,
                             ProductName = "French Fries"
                         });
